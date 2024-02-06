@@ -1,12 +1,12 @@
-# FractalKernel
+# TiledKernel
 ## Introduction
-FractalKernel is a **code generation library** based on **macro kernels** and **memory hierarchy graph data structure**.
+TiledKernel is a **code generation library** based on **macro kernels** and **memory hierarchy graph data structure**.
 
-FractalKernel aims to build a graph data structure and a series of macro kernels for code generation. The goal of FractalKernel is to generate high-performance fused kernels by leveraging a data structure that takes into account hardware characteristics and manually optimized macro kernels, while reducing scheduling overhead.
+TiledKernel aims to build a graph data structure and a series of macro kernels for code generation. The goal of TiledKernel is to generate high-performance fused kernels by leveraging a data structure that takes into account hardware characteristics and manually optimized macro kernels, while reducing scheduling overhead.
 
-In most of the current state-of-the-art (SOTA) methods, hardware vendor-provided libraries or manually optimized CUDA C methods are commonly used for code generation. However, the implementation of library functions is often black-box and cannot be fused together. The scheduling space of CUDA C implementations is large, and their performance deviates significantly from library functions. Therefore, FractalKernel is dedicated to proposing an approach that balances performance and flexibility.
+In most of the current state-of-the-art (SOTA) methods, hardware vendor-provided libraries or manually optimized CUDA C methods are commonly used for code generation. However, the implementation of library functions is often black-box and cannot be fused together. The scheduling space of CUDA C implementations is large, and their performance deviates significantly from library functions. Therefore, TiledKernel is dedicated to proposing an approach that balances performance and flexibility.
 
-To achieve these goals, FractalKernel will provide a data structure based on graph memory hierarchy and performance-optimized macro kernels.
+To achieve these goals, TiledKernel will provide a data structure based on graph memory hierarchy and performance-optimized macro kernels.
 
 ### Memory Hierarchy Graph Data Structure
 To represent the entire computational process, **a data structure (I think we can just refer to it as the IR)** is required. While the specifics of the data structure can be set aside for now, the overall structure should be hierarchical in nature as shown below.
