@@ -1,3 +1,4 @@
+#pragma once
 #include "mem_level.hpp"
 #include "microop.hpp"
 #include <memory>

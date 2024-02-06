@@ -1,3 +1,4 @@
+#pragma once
 #include "graph/tilededge.hpp"
 #include "graph/tilednode.hpp"
 #include "mem_level.hpp"
@@ -8,8 +9,8 @@ namespace tiledkernel::graph {
         std::string map();
 
        protected:
-        std::vector<TiledOutEdge> out_edges;
-        std::vector<TiledInEdge> in_edges;
+        std::vector<TiledEdge> out_edges;
+        std::vector<TiledEdge> in_edges;
         MemoryLevel mem_level;
         std::vector<TiledMicroOp> nodes;
     };
