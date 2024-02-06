@@ -2,6 +2,7 @@
 #include "mem_level.hpp"
 #include "tiledbuffer.hpp"
 #include "microop.hpp"
+#include "platform.hpp"
 #include <set>
 #include <string>
 
@@ -16,7 +17,7 @@ namespace tiledkernel::graph {
 
         std::set<TiledBuffer> getOutputs() { return outputs; }
 
-        std::string map();
+        std::string map(Platform platform);
 
        protected:
         std::set<TiledBuffer> inputs;

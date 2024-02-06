@@ -1,5 +1,6 @@
 #include "graph/tilededge.hpp"
 #include "tiledbuffer.hpp"
+#include "platform.hpp"
 #include <memory>
 #include <iostream>
 
@@ -17,8 +18,8 @@ int main() {
     auto edge_b = std::make_shared<TiledEdge>(std::set<TiledBuffer>{*sB},
                                               std::set<TiledBuffer>{*rB});
 
-    auto load_kernel_a = edge_a->map();
-    auto load_kernel_b = edge_b->map();
+    auto load_kernel_a = edge_a->map(Platform::Cute);
+    auto load_kernel_b = edge_b->map(Platform::Cute);
     std::cout << load_kernel_a << std::endl;
     std::cout << load_kernel_b << std::endl;
 }

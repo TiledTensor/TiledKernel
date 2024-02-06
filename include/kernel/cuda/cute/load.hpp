@@ -1,9 +1,6 @@
+#include "tiledbuffer.hpp"
 #include <string>
 
 namespace tiledkernel::kernel::cuda::cute {
-    class CuteLoadMacroKernel : public TiledMacroKernel {
-       public:
-        CuteLoadMacroKernel();
-        ~CuteLoadMacroKernel();
-    };
+    std::string load(BufferPtr a, BufferPtr b);
 }
