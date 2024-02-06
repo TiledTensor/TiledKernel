@@ -1,19 +1,19 @@
 #include "mem_level.hpp"
-#include "fractalbuffer.hpp"
+#include "tiledbuffer.hpp"
 #include "microop.hpp"
 #include <set>
 #include <string>
 
-namespace fractalkernel::graph {
+namespace tiledkernel::graph {
     // Edge types
     enum EdgeType { Input, Output };
 
     // FractalEdge class
     template <class Input, class Output>
-    class FractalEdge {
+    class TiledEdge {
        public:
-        FractalEdge(std::set<Input> inputs, std::set<Output> outputs,
-                    MemoryLevel mem_level, EdgeType edge_type) {
+        TiledEdge(std::set<Input> inputs, std::set<Output> outputs,
+                  MemoryLevel mem_level, EdgeType edge_type) {
             this->inputs = inputs;
             this->outputs = outputs;
             this->mem_level = mem_level;
@@ -37,6 +37,6 @@ namespace fractalkernel::graph {
         EdgeType edge_type;
     };
 
-    using FractalOutEdge = FractalEdge<FractalMicroOp, FractalBuffer>;
-    using FractalInEdge = FractalEdge<FractalBuffer, FractalMicroOp>;
-};  // namespace fractalkernel::graph
+    using TiledOutEdge = TiledEdge<TiledMicroOp, TiledBuffer>;
+    using TiledInEdge = TiledEdge<TiledBuffer, TiledMicroOp>;
+};  // namespace tiledkernel::graph

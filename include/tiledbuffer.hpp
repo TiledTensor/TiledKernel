@@ -1,3 +1,3 @@
 namespace tiledkernel {
-    class TiledMicroOp {};
+    class TiledBuffer {};
 }  // namespace tiledkernel

@@ -3,11 +3,11 @@
 #include <memory>
 #include <string>
 
-namespace fractalkernel::graph {
+namespace tiledkernel::graph {
     template <class MicroOp>
-    class FractalNode {
+    class TiledNode {
        public:
-        FractalNode(std::shared_ptr<MicroOp> micro_op);
+        TiledNode(std::shared_ptr<MicroOp> micro_op);
         std::string map();
 
        protected:
@@ -16,5 +16,5 @@ namespace fractalkernel::graph {
         // TODO: InEdges, OutEdges
     };
 
-    using FractalMicroOpNode = FractalNode<FractalMicroOp>;
-}  // namespace fractalkernel::graph
+    using TiledMicroOpNode = TiledNode<TiledMicroOp>;
+}  // namespace tiledkernel::graph
