@@ -4,12 +4,13 @@
 #include <string>
 
 namespace fractalkernel::graph {
+    // Edge types
     enum EdgeType {
         Input,
         Output
     };
 
-
+    // FractalEdge class
     template<class Input, class Output>
     class FractalEdge {
         public:
