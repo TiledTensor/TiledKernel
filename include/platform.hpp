@@ -1,5 +1,5 @@
 #pragma once
 
 namespace tiledkernel {
-    enum Platform { Cute, Triton };
+    enum Platform { Cute, Triton, Cpu };
 }

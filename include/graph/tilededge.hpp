@@ -3,24 +3,28 @@
 #include "tiledbuffer.hpp"
 #include "microop.hpp"
 #include "platform.hpp"
-#include <set>
+#include "access_map.hpp"
+#include <vector>
 #include <string>
 
 namespace tiledkernel::graph {
 
     class TiledEdge {
        public:
-        TiledEdge(std::set<TiledBuffer> inputs, std::set<TiledBuffer> outputs)
-            : inputs(inputs), outputs(outputs) {}
+        TiledEdge(std::shared_ptr<TiledBuffer> input,
+                  std::shared_ptr<TiledBuffer> output,
+                  std::shared_ptr<AccessMap> access_map)
+            : input(input), output(output), access_map(access_map) {}
 
-        std::set<TiledBuffer> getInputs() { return inputs; }
+        std::shared_ptr<TiledBuffer> getInput() { return input; }
 
-        std::set<TiledBuffer> getOutputs() { return outputs; }
+        std::shared_ptr<TiledBuffer> getOutput() { return output; }
 
         std::string map(Platform platform);
 
        protected:
-        std::set<TiledBuffer> inputs;
-        std::set<TiledBuffer> outputs;
+        std::shared_ptr<TiledBuffer> input;
+        std::shared_ptr<TiledBuffer> output;
+        std::shared_ptr<AccessMap> access_map;
     };
 };  // namespace tiledkernel::graph
