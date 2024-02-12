@@ -17,6 +17,7 @@ namespace tiledkernel::graph {
           intra_edges(intra_edges) {
         id = ID::make();
         ctx = std::make_shared<TiledContext>();
+        connect();
     }
 
     std::vector<std::shared_ptr<TiledNode>> TiledGraph::topoSort() {
@@ -44,5 +45,27 @@ namespace tiledkernel::graph {
         return sorted_nodes;
     }
 
-    void TiledGraph::connect() {}
+    void TiledGraph::connect() {
+        for (auto node : nodes) {
+            for (auto edge : node->in_edges) {
+                edge->setProducer(node);
+            }
+            for (auto edge : node->out_edges) {
+                edge->setConsumer(node);
+            }
+
+            // Add predecessors and successors
+            for (auto edge : node->in_edges) {
+                node->predecessors.push_back(edge->getProducer());
+            }
+
+            for (auto edge : node->out_edges) {
+                node->successors.push_back(edge->getConsumer());
+            }
+        }
+
+        for (auto in_edge : in_edges) {
+            in_edge->getConsumer()->in_degrees = 0;
+        }
+    }
 }  // namespace tiledkernel::graph

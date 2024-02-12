@@ -1,8 +1,9 @@
 #include "graph/tiledgraph.hpp"
 #include "graph/tilednode.hpp"
 #include "graph/tilededge.hpp"
-#include "tiledbuffer.hpp"
 #include "type/data_type.hpp"
+#include "tiledbuffer.hpp"
+#include "op.hpp"
 
 #include <gtest/gtest.h>
 
@@ -20,6 +21,9 @@ TEST(Graph, tiledgraph_topo) {
                                             DataType::Float32);
     auto sC = std::make_shared<TiledBuffer>("sC", MemoryLevel::Shared,
                                             DataType::Float32);
+
+    auto gemm = std::make_shared<Operator>(OpType::Gemm);
+
     auto rA =
         std::make_shared<TiledBuffer>("rA", MemoryLevel::RF, DataType::Float32);
     auto rB =
@@ -53,7 +57,7 @@ TEST(Graph, tiledgraph_topo) {
         std::vector<EdgePtr>{sB_rB_edge}, std::vector<EdgePtr>{rB_gemm_edge});
 
     auto gemm_node = std::make_shared<TiledNode>(
-        NodeType::Operator, MemoryLevel::RF, TiledNodeData{std::monostate{}},
+        NodeType::Operator, MemoryLevel::RF, TiledNodeData{gemm},
         std::vector<TiledEdge::Pointer>{rA_gemm_edge, rB_gemm_edge},
         std::vector<TiledEdge::Pointer>{gemm_acc_edge});
 
@@ -71,4 +75,10 @@ TEST(Graph, tiledgraph_topo) {
                              acc_node, sC_node},
         std::vector<EdgePtr>{sA_rA_edge, sB_rB_edge},
         std::vector<EdgePtr>{rA_gemm_edge, rB_gemm_edge, gemm_acc_edge});
+
+    auto sorted_nodes = rf_gemm_graph.topoSort();
+
+    for (auto node : sorted_nodes) {
+        std::cout << node->id << std::endl;
+    }
 }
