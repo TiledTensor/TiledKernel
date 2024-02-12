@@ -23,6 +23,8 @@ namespace tiledkernel {
                 int32_t end, int32_t step)
             : Var(name, dtype), start(start), end(end), step(step) {}
 
+        std::string map();
+
         int32_t start;
         int32_t end;
         int32_t step;

@@ -1,17 +1,31 @@
-// #pragma once
-// #include "graph/tilededge.hpp"
-// #include "graph/tilednode.hpp"
-// #include "mem_level.hpp"
+#pragma once
+#include "mem_level.hpp"
+#include "context.hpp"
+#include "id.hpp"
 
-// namespace tiledkernel::graph {
-//     class FractalGraph {
-//        public:
-//         std::string map();
+namespace tiledkernel::graph {
+    class TiledNode;
+    class TiledEdge;
 
-//        protected:
-//         std::vector<TiledEdge> out_edges;
-//         std::vector<TiledEdge> in_edges;
-//         MemoryLevel mem_level;
-//         // std::vector<TiledMicroOp> nodes;
-//     };
-// }  // namespace tiledkernel::graph
+    class TiledGraph {
+       public:
+        TiledGraph(MemoryLevel mem_level,
+                   std::vector<std::shared_ptr<TiledNode>> nodes,
+                   std::vector<std::shared_ptr<TiledEdge>> in_edges,
+                   std::vector<std::shared_ptr<TiledEdge>> out_edges,
+                   std::vector<std::shared_ptr<TiledEdge>> intra_edges = {});
+
+        std::vector<std::shared_ptr<TiledNode>> topoSort();
+
+       protected:
+        ID id;
+        MemoryLevel mem_level;
+        std::vector<std::shared_ptr<TiledNode>> nodes;
+        std::vector<std::shared_ptr<TiledEdge>> in_edges;
+        std::vector<std::shared_ptr<TiledEdge>> out_edges;
+        std::vector<std::shared_ptr<TiledEdge>> intra_edges;
+        ContextPtr ctx;
+
+        void connect();
+    };
+};  // namespace tiledkernel::graph

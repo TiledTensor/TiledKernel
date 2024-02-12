@@ -1,15 +1,14 @@
 #include "graph/tilededge.hpp"
+#include "graph/tilednode.hpp"
 
 namespace tiledkernel::graph {
-
-    std::string TiledEdge::map(Platform platform) {
-        std::string load_kernel;
-        if (platform == Platform::Cpu) {
-            // Add iterator.
-            // Add load kernel.
-        } else if (platform == Platform::Cute) {
-        } else if (platform == Platform::Triton) {
-        }
+    TiledEdge::TiledEdge() : producer(nullptr), consumer(nullptr) {
+        id = ID::make();
     }
 
+    TiledEdge::TiledEdge(std::shared_ptr<TiledNode> producer,
+                         std::shared_ptr<TiledNode> consumer)
+        : producer(producer), consumer(consumer) {
+        id = ID::make();
+    }
 };  // namespace tiledkernel::graph

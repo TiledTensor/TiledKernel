@@ -18,6 +18,10 @@ In this hierarchical dataflow graph, the dataflow edges have explicit operationa
 
 ![](docs/figures/dataflow_graph.png)
 
+This data structure is named **TiledGraph** in this project. TiledGraph consists of **TiledEdge** and **TiledNode**.
+
+**TiledEdge** is a directed edge that represents the **load** and **store** of data.
+
 ### Macro Kernels
 To balance performance and usability, Macro Kernels are planned to be implemented using **cute**.
 

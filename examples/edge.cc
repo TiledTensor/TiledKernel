@@ -24,7 +24,9 @@ int main() {
         std::make_shared<TiledBuffer>("rB", MemoryLevel::RF, DataType::Float32);
 
     auto access_map_a = std::make_shared<AccessMap>(
-        1, 1, std::vector{std::vector{1}}, std::vector{10}, std::vector{0});
+        1, 1, std::vector<std::vector<int32_t>>{{1}},
+        std::vector<std::pair<int32_t, int32_t>>{std::make_pair(0, 10)},
+        std::vector<int32_t>{1}, std::vector<int32_t>{0});
 
     auto edge_a = std::make_shared<TiledEdge>(sA, rA, access_map_a);
     // auto edge_b = std::make_shared<TiledEdge>(sB, rB);

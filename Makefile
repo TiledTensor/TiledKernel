@@ -3,7 +3,7 @@ EXAMPLE ?= edge
 EXAMPLE_SRCS := $(wildcard examples/*.cc)
 EXAMPLES := $(patsubst examples/%.cc, %, $(EXAMPLE_SRCS))
 
-LD_FLAGS := -Lbuild/ -ltiledkernel -Wl,-rpath=build/
+LD_FLAGS := -Lbuild/ -ltiledkernel -Wl,-rpath,build/
 INC_FLAGS := -Iinclude
 # MACRO_FLAGS := -DFMTLOG_HEADER_ONLY -DFMT_HEADER_ONLY
 
@@ -13,8 +13,14 @@ BUILD := build
 
 build:
 	@mkdir -p build
-	@cd build && cmake.. && make
+	@cd build && cmake .. && make
 
-example:
-	@$(CC) -std=c++17 examples/$(EXAMPLE).cc $(INC_FLAGS) $(LD_FLAGS) $(MACRO_FLAGS) -o build/$(EXAMPLE) 
+example: build
+	@$(CC) -std=c++17 examples/$(EXAMPLE).cc $(INC_FLAGS) $(LD_FLAGS) $(MACRO_FLAGS) -o build/$(EXAMPLE)
 	@./build/$(EXAMPLE)
+
+test: build
+	@cd build && make test
+
+clean:
+	@rm -rf build

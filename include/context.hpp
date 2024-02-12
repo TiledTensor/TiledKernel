@@ -6,11 +6,11 @@ namespace tiledkernel {
     class TiledContext {
        public:
         TiledContext();
-        ~TiledContext();
+        ~TiledContext() = default;
 
-        void pushVar(std::shared_ptr<Var> var);
+        // void pushVar(std::shared_ptr<Var> var);
 
-        std::vector<std::shared_ptr<Var>> vars;
+        // std::vector<std::shared_ptr<Var>> vars;
     };
 
     using ContextPtr = std::shared_ptr<TiledContext>;

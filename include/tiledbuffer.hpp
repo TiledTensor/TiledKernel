@@ -7,11 +7,13 @@ namespace tiledkernel {
     class TiledBuffer {
        public:
         TiledBuffer(std::string name, MemoryLevel mem_level,
-                    type::DataType dtype)
-            : name(name), mem_level(mem_level) {}
+                    type::DataType dtype);
+
+        ~TiledBuffer() = default;
 
         std::string name;
         MemoryLevel mem_level;
+        type::DataType dtype;
     };
 
     using BufferPtr = std::shared_ptr<TiledBuffer>;
