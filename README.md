@@ -18,9 +18,17 @@ In this hierarchical dataflow graph, the dataflow edges have explicit operationa
 
 ![](docs/figures/dataflow_graph.png)
 
+![Register-level GEMM TileGraph description](docs/figures/RF_GEMM_Graph.png)
+
 This data structure is named **TiledGraph** in this project. TiledGraph consists of **TiledEdge** and **TiledNode**.
 
 **TiledEdge** is a directed edge that represents the **load** and **store** of data.
+
+**TiledNode** is a node representation in TiledGraph, and it has multiple structures:
+- Operation: Stateless primitive tensor operations.
+- Task: A DAG build out of Operation Nodes and/or Task Nodes.
+- Buffer: An addressable aggregation of statically shaped homogeneous tensors serving as a shared
+memory among Task Nodes to merge the flow of control.
 
 ### Macro Kernels
 To balance performance and usability, Macro Kernels are planned to be implemented using **cute**.
