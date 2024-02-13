@@ -1,5 +1,6 @@
 #include "graph/tilednode.hpp"
 #include "graph/tilededge.hpp"
+#include "graph/tiledgraph.hpp"
 
 namespace tiledkernel::graph {
     TiledNode::TiledNode(NodeType node_type, MemoryLevel mem_level,

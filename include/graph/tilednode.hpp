@@ -8,13 +8,14 @@
 #include <variant>
 
 namespace tiledkernel::graph {
+    class TiledEdge;
+    class TiledGraph;
+
     enum class NodeType { Null, Buffer, Task, Operator };
 
     using TiledNodeData =
         std::variant<std::shared_ptr<Operator>, std::shared_ptr<TiledBuffer>,
-                     std::monostate>;
-
-    class TiledEdge;
+                     std::shared_ptr<TiledGraph>, std::monostate>;
 
     class TiledNode {
        public:

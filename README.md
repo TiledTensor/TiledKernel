@@ -20,6 +20,8 @@ In this hierarchical dataflow graph, the dataflow edges have explicit operationa
 
 ![Register-level GEMM TileGraph description](docs/figures/RF_GEMM_Graph.png)
 
+![](docs/figures/Shared_GEMM_Graph.png)
+
 This data structure is named **TiledGraph** in this project. TiledGraph consists of **TiledEdge** and **TiledNode**.
 
 **TiledEdge** is a directed edge that represents the **load** and **store** of data.
