@@ -23,6 +23,7 @@ namespace tiledkernel::graph {
         NodeType node_type;
         MemoryLevel mem_level;
         TiledNodeData data;
+        std::string name;
 
         std::vector<std::shared_ptr<TiledEdge>> in_edges;
         std::vector<std::shared_ptr<TiledEdge>> out_edges;
@@ -32,6 +33,7 @@ namespace tiledkernel::graph {
         TiledNode(NodeType node_type = NodeType::Null,
                   MemoryLevel mem_level = MemoryLevel::RF,
                   TiledNodeData data = TiledNodeData{std::monostate{}},
+                  std::string name = "",
                   std::vector<std::shared_ptr<TiledEdge>> in_edges = {},
                   std::vector<std::shared_ptr<TiledEdge>> out_edges = {});
     };
