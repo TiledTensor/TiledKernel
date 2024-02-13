@@ -1,4 +1,5 @@
 #include "generator.hpp"
+#include "error_handler.hpp"
 
 namespace tiledkernel {
 
@@ -14,6 +15,8 @@ namespace tiledkernel {
         }
     }
 
-    std::string TiledGenerator::emit_cute(TiledGraph::Pointer graph) {}
+    std::string TiledGenerator::emit_cute(TiledGraph::Pointer graph) {
+        TODO("Implement Cute generator");
+    }
 
 }  // namespace tiledkernel

@@ -3,7 +3,7 @@
 #include "graph/tilededge.hpp"
 #include "error_handler.hpp"
 #include <unordered_map>
-#include <iostream>
+#include <fmt/core.h>
 
 namespace tiledkernel::graph {
     TiledGraph::TiledGraph(MemoryLevel mem_level, std::string name,
@@ -35,12 +35,9 @@ namespace tiledkernel::graph {
             for (auto node = in_degrees.begin(); node != in_degrees.end();
                  node++) {
                 if (node->second == 0) {
-                    std::cout << "Node: " << node->first->id << std::endl;
                     sorted_nodes.push_back(node->first);
                     for (auto successor : (node->first)->successors) {
                         in_degrees[successor] -= 1;
-                        std::cout << "Successor: " << successor->id
-                                  << std::endl;
                     }
                     in_degrees.erase(node);
                     break;
@@ -49,6 +46,16 @@ namespace tiledkernel::graph {
         }
 
         return sorted_nodes;
+    }
+
+    bool TiledGraph::isNodeExist(std::shared_ptr<TiledNode> node) {
+        // Check ID is equal?
+        for (auto graph_node : nodes) {
+            if (graph_node->id == node->id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     void TiledGraph::connect() {

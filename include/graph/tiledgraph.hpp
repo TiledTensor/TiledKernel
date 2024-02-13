@@ -17,6 +17,8 @@ namespace tiledkernel::graph {
 
         std::vector<std::shared_ptr<TiledNode>> topoSort();
 
+        bool isNodeExist(std::shared_ptr<TiledNode> node);
+
         using Pointer = std::shared_ptr<TiledGraph>;
 
        protected:

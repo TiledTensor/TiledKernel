@@ -11,9 +11,9 @@ using namespace tiledkernel::type;
 using namespace tiledkernel::graph;
 
 int main() {
-    // Build a RF Gemm graph
+    // Build a Shared Gemm graph
 
-    std::cout << "RF GEMM Graph Example:" << std::endl;
+    std::cout << "Shared GEMM Graph Example:" << std::endl;
     // Define buffers
     auto sA = std::make_shared<TiledBuffer>("sA", MemoryLevel::Shared,
                                             DataType::Float32);
@@ -31,6 +31,13 @@ int main() {
     auto acc = std::make_shared<TiledBuffer>("acc", MemoryLevel::RF,
                                              DataType::Float32);
 
+    auto gA = std::make_shared<TiledBuffer>("gA", MemoryLevel::Global,
+                                            DataType::Float32);
+    auto gB = std::make_shared<TiledBuffer>("gB", MemoryLevel::Global,
+                                            DataType::Float32);
+    auto gC = std::make_shared<TiledBuffer>("gC", MemoryLevel::Global,
+                                            DataType::Float32);
+
     // Define edges
     auto sA_rA_edge = std::make_shared<TiledEdge>("sA_rA_edge");
     auto sB_rB_edge = std::make_shared<TiledEdge>("sB_rB_edge");
@@ -39,14 +46,18 @@ int main() {
     auto gemm_acc_edge = std::make_shared<TiledEdge>("gemm_acc_edge");
     auto acc_sC_edge = std::make_shared<TiledEdge>("acc_sC_edge");
 
+    auto gA_sA_edge = std::make_shared<TiledEdge>("gA_sA_edge");
+    auto gB_sB_edge = std::make_shared<TiledEdge>("gB_sB_edge");
+    auto sC_gC_edge = std::make_shared<TiledEdge>("sC_gC_edge");
+
     // Define nodes
     auto sA_node = std::make_shared<TiledNode>(
         NodeType::Buffer, MemoryLevel::Shared, TiledNodeData{sA}, "sA_node",
-        std::vector<EdgePtr>{}, std::vector<EdgePtr>{sA_rA_edge});
+        std::vector<EdgePtr>{gA_sA_edge}, std::vector<EdgePtr>{sA_rA_edge});
 
     auto sB_node = std::make_shared<TiledNode>(
         NodeType::Buffer, MemoryLevel::Shared, TiledNodeData{sB}, "sB_node",
-        std::vector<EdgePtr>{}, std::vector<EdgePtr>{sB_rB_edge});
+        std::vector<EdgePtr>{gB_sB_edge}, std::vector<EdgePtr>{sB_rB_edge});
 
     auto rA_node = std::make_shared<TiledNode>(
         NodeType::Buffer, MemoryLevel::RF, TiledNodeData{rA}, "rA_node",
@@ -67,7 +78,19 @@ int main() {
 
     auto sC_node = std::make_shared<TiledNode>(
         NodeType::Buffer, MemoryLevel::Shared, TiledNodeData{sC}, "sC_node",
-        std::vector<EdgePtr>{acc_sC_edge}, std::vector<EdgePtr>{});
+        std::vector<EdgePtr>{acc_sC_edge}, std::vector<EdgePtr>{sC_gC_edge});
+
+    auto gA_node = std::make_shared<TiledNode>(
+        NodeType::Buffer, MemoryLevel::Global, TiledNodeData{gA}, "gA_node",
+        std::vector<EdgePtr>{}, std::vector<EdgePtr>{gA_sA_edge});
+
+    auto gB_node = std::make_shared<TiledNode>(
+        NodeType::Buffer, MemoryLevel::Global, TiledNodeData{gB}, "gB_node",
+        std::vector<EdgePtr>{}, std::vector<EdgePtr>{gB_sB_edge});
+
+    auto gC_node = std::make_shared<TiledNode>(
+        NodeType::Buffer, MemoryLevel::Global, TiledNodeData{gC}, "gC_node",
+        std::vector<EdgePtr>{sC_gC_edge}, std::vector<EdgePtr>{});
 
     auto rf_gemm_graph = std::make_shared<TiledGraph>(
         MemoryLevel::RF, "rf_gemm_graph",
@@ -78,5 +101,21 @@ int main() {
 
     auto rf_gemm_node = std::make_shared<TiledNode>(
         NodeType::Task, MemoryLevel::RF, TiledNodeData{rf_gemm_graph},
-        "rf_gemm_node", std::vector<EdgePtr>{}, std::vector<EdgePtr>{});
+        "rf_gemm_node", std::vector<EdgePtr>{sA_rA_edge, sB_rB_edge},
+        std::vector<EdgePtr>{acc_sC_edge});
+
+    std::cout << "Connect Shared GEMM Graph:" << std::endl;
+    auto shared_gemm_graph = std::make_shared<TiledGraph>(
+        MemoryLevel::Shared, "shared_gemm_graph",
+        std::vector<NodePtr>{sA_node, sB_node, sC_node, rf_gemm_node},
+        std::vector<EdgePtr>{gA_sA_edge, gB_sB_edge},
+        std::vector<EdgePtr>{sC_gC_edge},
+        std::vector<EdgePtr>{sA_rA_edge, sB_rB_edge, acc_sC_edge});
+
+    auto sorted_nodes = shared_gemm_graph->topoSort();
+
+    std::cout << "ID\tName" << std::endl;
+    for (auto node : sorted_nodes) {
+        std::cout << node->id << "\t" << node->name << std::endl;
+    }
 }

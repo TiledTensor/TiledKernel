@@ -1,11 +1,11 @@
 CC := g++
-EXAMPLE ?= rf_graph
+EXAMPLE ?= shared_graph
 EXAMPLE_SRCS := $(wildcard examples/*.cc)
 EXAMPLES := $(patsubst examples/%.cc, %, $(EXAMPLE_SRCS))
 
 LD_FLAGS := -Lbuild/ -ltiledkernel -Wl,-rpath,build/
-INC_FLAGS := -Iinclude
-# MACRO_FLAGS := -DFMTLOG_HEADER_ONLY -DFMT_HEADER_ONLY
+INC_FLAGS := -Iinclude -I3rd-party/fmt/include
+MACRO_FLAGS := -DFMT_HEADER_ONLY
 
 BUILD := build
 

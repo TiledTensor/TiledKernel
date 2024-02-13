@@ -51,7 +51,6 @@ add_subdirectory(3rd-party/fmt)
 add_compile_options(-Wall)
 add_compile_options(-Werror)
 
-# target_link_directories(tilegraph PRIVATE 3rd-party/fmt/build)
 target_link_libraries(tiledkernel PRIVATE fmt)
 
 function(build_test files)

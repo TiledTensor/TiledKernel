@@ -13,6 +13,8 @@ namespace tiledkernel::graph {
 
     class TiledEdge {
        public:
+        std::string name;
+
         TiledEdge(std::string name = "",
                   std::shared_ptr<TiledNode> producer = nullptr,
                   std::shared_ptr<TiledNode> consumer = nullptr);
@@ -35,7 +37,6 @@ namespace tiledkernel::graph {
         // std::shared_ptr<TiledBuffer> input;
         // std::shared_ptr<TiledBuffer> output;
         ID id;
-        std::string name;
         std::shared_ptr<TiledNode> producer;
         std::shared_ptr<TiledNode> consumer;
         // std::shared_ptr<AccessMap> access_map;

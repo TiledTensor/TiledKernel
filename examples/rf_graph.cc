@@ -13,7 +13,7 @@ using namespace tiledkernel::graph;
 int main() {
     // Build a RF Gemm graph
 
-    std::cout << "RF GEMM Graph Example:" << std::endl;
+    std::cout << "Run RF GEMM Graph Example:" << std::endl;
     // Define buffers
     auto sA = std::make_shared<TiledBuffer>("sA", MemoryLevel::Shared,
                                             DataType::Float32);
@@ -78,7 +78,8 @@ int main() {
 
     auto sorted_nodes = rf_gemm_graph.topoSort();
 
+    std::cout << "ID\tName" << std::endl;
     for (auto node : sorted_nodes) {
-        std::cout << node->id << " " << node->name << std::endl;
+        std::cout << node->id << "\t" << node->name << std::endl;
     }
 }
