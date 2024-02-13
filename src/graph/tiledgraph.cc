@@ -18,7 +18,6 @@ namespace tiledkernel::graph {
           out_edges(out_edges),
           intra_edges(intra_edges) {
         id = ID::make();
-        ctx = std::make_shared<TiledContext>();
 
         // Connect nodes and edges
         connect();

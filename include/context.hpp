@@ -11,7 +11,8 @@ namespace tiledkernel {
         // void pushVar(std::shared_ptr<Var> var);
 
         // std::vector<std::shared_ptr<Var>> vars;
+
+        using Pointer = std::shared_ptr<TiledContext>;
     };
 
-    using ContextPtr = std::shared_ptr<TiledContext>;
 }  // namespace tiledkernel

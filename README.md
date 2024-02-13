@@ -48,7 +48,7 @@ To avoid overly complex considerations, we take the example of Back2Back GEMM at
 We will name the above dataflow graph structure as micro_op_a, representing a macro op at the RF level. Simultaneously, we can invoke micro_op_a as a macro op at the Shared Memory level, at the same level as Load/Store/Compute, and compose a higher-level dataflow graph. It is worth noting that when generating macro_ops at different levels, it is necessary to insert synchronization primitives at different levels.
 
 
-As a motivating example, a back-to-back pseudocode can be represented as follows:
+As a motivating example, a **back-to-back GEMM** pseudocode can be represented as follows:
 
 ```
 // inputs are on global memory, each dimension is iterated (controlled) by a loop
@@ -93,3 +93,36 @@ for as in ASS:  // Block-mapped, --> block.x
 ```
 
 We can generate a complete fused kernel by describing the data flow and manually optimizing macro kernels based on memory hierarchy data structures.
+
+### Access Map
+In order to represent loops, we introduce the **access map** in polyhedral compilation to represent data loops and access patterns.
+
+Consider a loop nest of depth $D$ that accesses an $M$ dimensional array. The memory access pattern of the array in the loop is represented as a **memory access vector**, $\vec m$, which is a column vector of size M starting from the index of the first dimension. The memory access vector is decomposed to the affine form:
+
+$$
+\vec m = M \vec i + \vec o
+$$
+
+where $M$ is a memory access matrix whose size is $M \times D$, $\vec i$ is an iteration vector of size $D$ iterating from the outermost to innermost loop, and $\vec o$ is an offset vector that is a column vector of size $M$ that determines the starting point in an array. Note that we only consider loops whose accesses to arrays are affine functions of loop indices and symbolic variables. We have found that this restriction does not limit us since most scientific applications involve loops possessing affine access patterns.
+
+
+Each column in the memory access matrix, $M$, represents the memory access pattern of the corresponding loop level, and the number of columns is dictated by the depth of the loop nest. Each row in $M$ and $\vec o$ represents the memory access pattern of a dimension of the array, and the number of rows is dictated by the number of dimensions in the array.
+
+## Usage
+
+### Build
+```
+git clone --recursive git@github.com:TiledTensor/TiledKernel.git
+cd Tiledkernel
+make build
+```
+
+### Test
+```
+make test
+```
+
+### Run Examples
+```
+make example EXAMPLE=$(EXAMPLE)
+```

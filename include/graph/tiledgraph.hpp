@@ -1,6 +1,5 @@
 #pragma once
 #include "mem_level.hpp"
-#include "context.hpp"
 #include "id.hpp"
 
 namespace tiledkernel::graph {
@@ -28,7 +27,6 @@ namespace tiledkernel::graph {
         std::vector<std::shared_ptr<TiledEdge>> in_edges;
         std::vector<std::shared_ptr<TiledEdge>> out_edges;
         std::vector<std::shared_ptr<TiledEdge>> intra_edges;
-        ContextPtr ctx;
 
         void connect();
     };
