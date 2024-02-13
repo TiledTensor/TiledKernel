@@ -2,6 +2,7 @@
 #include "type/data_type.hpp"
 #include "mem_level.hpp"
 #include <string>
+#include <memory>
 
 namespace tiledkernel {
     class TiledBuffer {

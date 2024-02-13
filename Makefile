@@ -7,6 +7,8 @@ LD_FLAGS := -Lbuild/ -ltiledkernel -Wl,-rpath,build/
 INC_FLAGS := -Iinclude -I3rd-party/fmt/include
 MACRO_FLAGS := -DFMT_HEADER_ONLY
 
+CUDA ?= ON
+
 BUILD := build
 
 .PHONY: build example 

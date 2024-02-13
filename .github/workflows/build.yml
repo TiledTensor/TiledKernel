@@ -1,0 +1,28 @@
+name: Build And Test CI
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+  pull_request:
+    paths:
+      - '**.md'
+      - 'LICENSE'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: build
+      run: make build CUDA=OFF
+
+    - name: test
+      run: make test

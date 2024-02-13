@@ -42,6 +42,7 @@ file(GLOB_RECURSE SOURCE
   src/graph/*.cc
 )
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(tiledkernel SHARED ${SOURCE})
 
 include_directories(3rd-party/fmt/include)

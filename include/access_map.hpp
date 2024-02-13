@@ -19,7 +19,7 @@ namespace tiledkernel {
               step_size(step_size),
               offset(offset) {}
 
-        std::string map(Platform platform, BufferPtr a, BufferPtr b);
+        // std::string map(Platform platform, BufferPtr a, BufferPtr b);
 
         size_t loop_depth;
         size_t access_dims;

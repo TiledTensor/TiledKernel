@@ -1,6 +1,8 @@
 #pragma once
 #include "mem_level.hpp"
 #include "id.hpp"
+#include <vector>
+#include <memory>
 
 namespace tiledkernel::graph {
     class TiledNode;

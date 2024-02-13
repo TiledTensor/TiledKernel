@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <atomic>
+#include <optional>
 
 namespace tiledkernel {
 
