@@ -2,6 +2,8 @@
 #include "graph/tiledgraph.hpp"
 #include "platform.hpp"
 #include "context.hpp"
+#include "access_map.hpp"
+#include "var.hpp"
 
 namespace tiledkernel {
     using namespace tiledkernel::graph;
@@ -20,5 +22,8 @@ namespace tiledkernel {
         std::string emit_cute(TiledGraph::Pointer graph);
         std::string emit_rf_cute(TiledGraph::Pointer graph);
         std::string emit_rf_cute_gemm(TiledNode::Pointer node);
+
+        std::string generate_loop(IterVar::Pointer iter_var, std::string body);
+        std::string generate_access_map(AccessMap::Pointer access_map);
     };
 }  // namespace tiledkernel

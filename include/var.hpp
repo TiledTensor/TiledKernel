@@ -2,6 +2,8 @@
 #include "type/data_type.hpp"
 #include "id.hpp"
 #include <string>
+#include <memory>
+#include <vector>
 
 namespace tiledkernel {
     class Var {
@@ -17,6 +19,8 @@ namespace tiledkernel {
         std::string name;
         type::DataType dtype;
         ID id;
+
+        using Pointer = std::shared_ptr<Var>;
     };
 
     class IterVar : public Var {
@@ -40,5 +44,7 @@ namespace tiledkernel {
         int32_t start;
         int32_t end;
         int32_t step;
+
+        using Pointer = std::shared_ptr<IterVar>;
     };
 };  // namespace tiledkernel

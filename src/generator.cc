@@ -3,6 +3,7 @@
 #include "generator.hpp"
 #include "error_handler.hpp"
 #include <fmt/core.h>
+#include <sstream>
 
 namespace tiledkernel {
 
@@ -98,6 +99,14 @@ namespace tiledkernel {
                        "Access map should have the same pin iter var.");
                 ASSERT(access_map_acc->hasPinIterVar(loop),
                        "Access map should have the same pin iter var.");
+
+                // Check if the pin iter var is the same.
+                ASSERT(access_map_rA->pin_iter_vars[loop].value()->id ==
+                           access_map_rB->pin_iter_vars[loop].value()->id,
+                       "Pin iter var should be the same.");
+                ASSERT(access_map_rA->pin_iter_vars[loop].value()->id ==
+                           access_map_acc->pin_iter_vars[loop].value()->id,
+                       "Pin iter var should be the same.");
             } else {
                 auto iter_var = std::make_shared<IterVar>(
                     type::DataType::Int32,
@@ -110,66 +119,56 @@ namespace tiledkernel {
                 access_map_rB->setPinIterVar(loop, iter_var);
                 access_map_acc->setPinIterVar(loop, iter_var);
             }
-
-            // Generate loop
-            kernel +=
-                fmt::format("{}for (int {} = {}; {} < {}; {} += {}) {{\n",
-                            std::string(indient, ' '),
-                            access_map_rA->pin_iter_vars[loop].value()->name,
-                            access_map_rA->iteration_domain[loop].first,
-                            access_map_rA->pin_iter_vars[loop].value()->name,
-                            access_map_rA->iteration_domain[loop].second,
-                            access_map_rA->pin_iter_vars[loop].value()->name,
-                            access_map_rA->step_size[loop]);
-            indient += 4;
         }
 
-        std::string rA_access = rA->getBufferName().value();
-        std::string rB_access = rB->getBufferName().value();
-        std::string acc_access = acc->getBufferName().value();
-
-        for (int access_loop = 0; access_loop < access_map_rA->getAccessDims();
-             access_loop++) {
-            auto rA_access_dim = access_map_rA->access_pattern[access_loop];
-            for (int loop = 0; loop < access_map_rA->getLoops(); loop++) {
-                if (rA_access_dim[loop] != 0)
-                    rA_access += fmt::format(
-                        "[{} * {}]", rA_access_dim[loop],
-                        access_map_rA->pin_iter_vars[loop].value()->name);
-            }
-        }
-
-        for (int access_loop = 0; access_loop < access_map_rB->getAccessDims();
-             access_loop++) {
-            auto rB_access_dim = access_map_rB->access_pattern[access_loop];
-            for (int loop = 0; loop < access_map_rB->getLoops(); loop++) {
-                if (rB_access_dim[loop] != 0)
-                    rB_access += fmt::format(
-                        "[{} * {}]", rB_access_dim[loop],
-                        access_map_rB->pin_iter_vars[loop].value()->name);
-            }
-        }
-
-        for (int access_loop = 0; access_loop < access_map_acc->getAccessDims();
-             access_loop++) {
-            auto acc_access_dim = access_map_acc->access_pattern[access_loop];
-            for (int loop = 0; loop < access_map_acc->getLoops(); loop++) {
-                if (acc_access_dim[loop] != 0)
-                    acc_access += fmt::format(
-                        "[{} * {}]", acc_access_dim[loop],
-                        access_map_acc->pin_iter_vars[loop].value()->name);
-            }
-        }
+        std::string rA_access =
+            rA->getBufferName().value() + generate_access_map(access_map_rA);
+        std::string rB_access =
+            rB->getBufferName().value() + generate_access_map(access_map_rB);
+        std::string acc_access =
+            acc->getBufferName().value() + generate_access_map(access_map_acc);
 
         // TODO: Use macro kernel instead of hardcoding the kernel.
-        kernel +=
+        auto kernel_body =
             fmt::format("{}gemm({}, {}, {});\n", std::string(indient, ' '),
                         rA_access, rB_access, acc_access);
 
-        // Close loop parenthesis.
-        for (auto loop = 0; loop < access_map_rA->getLoops(); loop++) {
-            indient -= 4;
-            kernel += fmt::format("{}}}\n", std::string(indient, ' '));
+        kernel +=
+            generate_loop(access_map_rA->pin_iter_vars[0].value(), kernel_body);
+
+        return kernel;
+    }
+
+    std::string TiledGenerator::generate_loop(std::shared_ptr<IterVar> iter_var,
+                                              std::string body) {
+        std::string kernel;
+        uint64_t indient = 0;
+        kernel += fmt::format("for (int {} = {}; {} < {}; {} += {}) {{\n",
+                              iter_var->name, iter_var->start, iter_var->name,
+                              iter_var->end, iter_var->name, iter_var->step);
+        indient += 4;
+        std::istringstream iss(body);
+        std::string line;
+        while (std::getline(iss, line)) {
+            kernel += fmt::format("{}{}\n", std::string(indient, ' '), line);
+        }
+        indient -= 4;
+        kernel += fmt::format("{}}}\n", std::string(indient, ' '));
+        return kernel;
+    }
+
+    std::string TiledGenerator::generate_access_map(
+        AccessMap::Pointer access_map) {
+        std::string kernel;
+        for (int access_loop = 0; access_loop < access_map->getAccessDims();
+             access_loop++) {
+            auto access_dim = access_map->access_pattern[access_loop];
+            for (int loop = 0; loop < access_map->getLoops(); loop++) {
+                if (access_dim[loop] != 0)
+                    kernel += fmt::format(
+                        "[{} * {}]", access_dim[loop],
+                        access_map->pin_iter_vars[loop].value()->name);
+            }
         }
         return kernel;
     }

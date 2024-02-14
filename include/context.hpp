@@ -1,6 +1,7 @@
 #pragma once
 #include "var.hpp"
 #include <memory>
+#include <vector>
 
 namespace tiledkernel {
     class TiledContext {
