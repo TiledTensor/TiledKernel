@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <variant>
+#include <optional>
 
 namespace tiledkernel::graph {
     class TiledEdge;
@@ -47,7 +48,16 @@ namespace tiledkernel::graph {
             return OpType::Null;
         }
 
+        MemoryLevel getMemLevel() { return mem_level; }
+
         std::string getName() { return name; }
+
+        std::optional<std::string> getBufferName() {
+            if (node_type == NodeType::Buffer) {
+                return std::get<std::shared_ptr<TiledBuffer>>(data)->name;
+            }
+            return {};
+        }
 
         std::vector<std::shared_ptr<TiledEdge>> getInEdges() {
             return in_edges;

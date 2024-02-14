@@ -1,4 +1,5 @@
 #include "graph/tilednode.hpp"
+#include "graph/tilededge.hpp"
 #include "generator.hpp"
 #include "error_handler.hpp"
 #include <fmt/core.h>
@@ -70,10 +71,26 @@ namespace tiledkernel {
         auto rB = predecessors[1];
         auto acc = successors[0];
 
+        auto gemm_in_edges = node->getInEdges();
+        auto gemm_out_edges = node->getOutEdges();
+
+        ASSERT(gemm_in_edges.size() == 2, "Gemm node should have 2 in edges.");
+        ASSERT(gemm_out_edges.size() == 1, "Gemm node should have 1 out edge.");
+
         // TODO: Add `access_map` to `TiledNode` to store the access pattern.
         std::string kernel;
-        kernel += fmt::format("gemm({}, {}, {});\n", rA->getName(),
-                              rB->getName(), acc->getName());
+
+        // TODO: Generate  `for` loop.
+        auto access_map_rA = gemm_in_edges[0]->getAccessMapI();
+        auto access_map_rB = gemm_in_edges[1]->getAccessMapI();
+        auto access_map_acc = gemm_out_edges[0]->getAccessMapI();
+
+        // TODO: Check if the access map is valid.
+
+        // TODO: Use macro kernel instead of hardcoding the kernel.
+        kernel += fmt::format(
+            "gemm({}, {}, {});\n", rA->getBufferName().value(),
+            rB->getBufferName().value(), acc->getBufferName().value());
         return kernel;
     }
 

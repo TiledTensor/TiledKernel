@@ -4,6 +4,7 @@
 #include "context.hpp"
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace tiledkernel {
     class AccessMap {
@@ -30,5 +31,7 @@ namespace tiledkernel {
         // loop_depth
         std::vector<int32_t> step_size;
         std::vector<int32_t> offset;
+
+        using Pointer = std::shared_ptr<AccessMap>;
     };
 }  // namespace tiledkernel
