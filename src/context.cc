@@ -1,9 +1,10 @@
 #include "context.hpp"
 
 namespace tiledkernel {
-    // void TiledContext::pushVar(std::shared_ptr<Var> var) {
-    //     vars.push_back(var);
-    // }
 
     TiledContext::TiledContext() {}
-}
+
+    void TiledContext::pushVar(std::shared_ptr<Var> var) {
+        vars.push_back(var);
+    }
+}  // namespace tiledkernel

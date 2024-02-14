@@ -81,16 +81,96 @@ namespace tiledkernel {
         std::string kernel;
 
         // TODO: Generate  `for` loop.
+        // TODO: Check if the access map is valid.
         auto access_map_rA = gemm_in_edges[0]->getAccessMapI();
         auto access_map_rB = gemm_in_edges[1]->getAccessMapI();
         auto access_map_acc = gemm_out_edges[0]->getAccessMapI();
 
-        // TODO: Check if the access map is valid.
+        ASSERT(access_map_rA->getLoops() == access_map_rB->getLoops(),
+               "Access map should have the same number of loops.");
+        ASSERT(access_map_rA->getLoops() == access_map_acc->getLoops(),
+               "Access map should have the same number of loops.");
+
+        uint64_t indient = 0;
+        for (auto loop = 0; loop < access_map_rA->getLoops(); loop++) {
+            if (access_map_rA->hasPinIterVar(loop)) {
+                ASSERT(access_map_rB->hasPinIterVar(loop),
+                       "Access map should have the same pin iter var.");
+                ASSERT(access_map_acc->hasPinIterVar(loop),
+                       "Access map should have the same pin iter var.");
+            } else {
+                auto iter_var = std::make_shared<IterVar>(
+                    type::DataType::Int32,
+                    access_map_rA->iteration_domain[loop].first,
+                    access_map_rA->iteration_domain[loop].second,
+                    access_map_rA->step_size[loop]);
+
+                ctx->pushVar(iter_var);
+                access_map_rA->setPinIterVar(loop, iter_var);
+                access_map_rB->setPinIterVar(loop, iter_var);
+                access_map_acc->setPinIterVar(loop, iter_var);
+            }
+
+            // Generate loop
+            kernel +=
+                fmt::format("{}for (int {} = {}; {} < {}; {} += {}) {{\n",
+                            std::string(indient, ' '),
+                            access_map_rA->pin_iter_vars[loop].value()->name,
+                            access_map_rA->iteration_domain[loop].first,
+                            access_map_rA->pin_iter_vars[loop].value()->name,
+                            access_map_rA->iteration_domain[loop].second,
+                            access_map_rA->pin_iter_vars[loop].value()->name,
+                            access_map_rA->step_size[loop]);
+            indient += 4;
+        }
+
+        std::string rA_access = rA->getBufferName().value();
+        std::string rB_access = rB->getBufferName().value();
+        std::string acc_access = acc->getBufferName().value();
+
+        for (int access_loop = 0; access_loop < access_map_rA->getAccessDims();
+             access_loop++) {
+            auto rA_access_dim = access_map_rA->access_pattern[access_loop];
+            for (int loop = 0; loop < access_map_rA->getLoops(); loop++) {
+                if (rA_access_dim[loop] != 0)
+                    rA_access += fmt::format(
+                        "[{} * {}]", rA_access_dim[loop],
+                        access_map_rA->pin_iter_vars[loop].value()->name);
+            }
+        }
+
+        for (int access_loop = 0; access_loop < access_map_rB->getAccessDims();
+             access_loop++) {
+            auto rB_access_dim = access_map_rB->access_pattern[access_loop];
+            for (int loop = 0; loop < access_map_rB->getLoops(); loop++) {
+                if (rB_access_dim[loop] != 0)
+                    rB_access += fmt::format(
+                        "[{} * {}]", rB_access_dim[loop],
+                        access_map_rB->pin_iter_vars[loop].value()->name);
+            }
+        }
+
+        for (int access_loop = 0; access_loop < access_map_acc->getAccessDims();
+             access_loop++) {
+            auto acc_access_dim = access_map_acc->access_pattern[access_loop];
+            for (int loop = 0; loop < access_map_acc->getLoops(); loop++) {
+                if (acc_access_dim[loop] != 0)
+                    acc_access += fmt::format(
+                        "[{} * {}]", acc_access_dim[loop],
+                        access_map_acc->pin_iter_vars[loop].value()->name);
+            }
+        }
 
         // TODO: Use macro kernel instead of hardcoding the kernel.
-        kernel += fmt::format(
-            "gemm({}, {}, {});\n", rA->getBufferName().value(),
-            rB->getBufferName().value(), acc->getBufferName().value());
+        kernel +=
+            fmt::format("{}gemm({}, {}, {});\n", std::string(indient, ' '),
+                        rA_access, rB_access, acc_access);
+
+        // Close loop parenthesis.
+        for (auto loop = 0; loop < access_map_rA->getLoops(); loop++) {
+            indient -= 4;
+            kernel += fmt::format("{}}}\n", std::string(indient, ' '));
+        }
         return kernel;
     }
 

@@ -9,7 +9,9 @@ namespace tiledkernel {
        public:
         TiledGenerator();
         ~TiledGenerator() = default;
+
         TiledContext::Pointer getContext() { return ctx; }
+        // Emit code for the given graph
         std::string emit(Platform platform, TiledGraph::Pointer graph);
 
        private:
