@@ -92,7 +92,7 @@ namespace tiledkernel {
         ASSERT(access_map_rA->getLoops() == access_map_acc->getLoops(),
                "Access map should have the same number of loops.");
 
-        for (auto loop = 0; loop < access_map_rA->getLoops(); loop++) {
+        for (size_t loop = 0; loop < access_map_rA->getLoops(); loop++) {
             if (access_map_rA->hasPinIterVar(loop)) {
                 ASSERT(access_map_rB->hasPinIterVar(loop),
                        "Access map should have the same pin iter var.");
@@ -131,7 +131,7 @@ namespace tiledkernel {
         auto kernel_body = fmt::format("gemm({}, {}, {});\n", rA_access,
                                        rB_access, acc_access);
 
-        for (auto loop = 0; loop < access_map_rA->getLoops(); loop++) {
+        for (size_t loop = 0; loop < access_map_rA->getLoops(); loop++) {
             kernel_body = generate_loop(
                 access_map_rA->pin_iter_vars[loop].value(), kernel_body);
         }
@@ -162,10 +162,10 @@ namespace tiledkernel {
     std::string TiledGenerator::generate_access_map(
         AccessMap::Pointer access_map) {
         std::string kernel;
-        for (auto access_loop = 0; access_loop < access_map->getAccessDims();
+        for (size_t access_loop = 0; access_loop < access_map->getAccessDims();
              access_loop++) {
             auto access_dim = access_map->access_pattern[access_loop];
-            for (auto loop = 0; loop < access_map->getLoops(); loop++) {
+            for (size_t loop = 0; loop < access_map->getLoops(); loop++) {
                 if (access_dim[loop] == 0) {
                     return "";
                 } else if (access_dim[loop] == 1) {
