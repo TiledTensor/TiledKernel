@@ -3,6 +3,8 @@
 #include "graph/tilededge.hpp"
 #include "type/data_type.hpp"
 #include "tiledbuffer.hpp"
+#include "generator.hpp"
+#include "platform.hpp"
 #include "op.hpp"
 #include <iostream>
 
@@ -69,17 +71,23 @@ int main() {
         NodeType::Buffer, MemoryLevel::Shared, TiledNodeData{sC}, "sC_node",
         std::vector<EdgePtr>{acc_sC_edge}, std::vector<EdgePtr>{});
 
-    auto rf_gemm_graph = TiledGraph(
+    auto rf_gemm_graph = std::make_shared<TiledGraph>(
         MemoryLevel::RF, "rf_gemm_graph",
         std::vector<NodePtr>{rA_node, rB_node, gemm_node, acc_node},
         std::vector<EdgePtr>{sA_rA_edge, sB_rB_edge},
         std::vector<EdgePtr>{acc_sC_edge},
         std::vector<EdgePtr>{rA_gemm_edge, rB_gemm_edge, gemm_acc_edge});
 
-    auto sorted_nodes = rf_gemm_graph.topoSort();
+    auto sorted_nodes = rf_gemm_graph->topoSort();
 
     std::cout << "ID\tName" << std::endl;
     for (auto node : sorted_nodes) {
         std::cout << node->id << "\t" << node->name << std::endl;
     }
+
+    auto generator = std::make_shared<TiledGenerator>();
+
+    auto kernel = generator->emit(Platform::Cute, rf_gemm_graph);
+
+    std::cout << "Generate kernel:" << std::endl << kernel << std::endl;
 }

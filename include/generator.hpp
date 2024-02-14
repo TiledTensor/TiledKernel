@@ -16,5 +16,7 @@ namespace tiledkernel {
         TiledContext::Pointer ctx;
 
         std::string emit_cute(TiledGraph::Pointer graph);
+        std::string emit_rf_cute(TiledGraph::Pointer graph);
+        std::string emit_rf_cute_gemm(TiledNode::Pointer node);
     };
 }  // namespace tiledkernel

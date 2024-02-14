@@ -15,6 +15,8 @@ namespace tiledkernel {
         std::string name;
         MemoryLevel mem_level;
         type::DataType dtype;
+
+        using Pointer = std::shared_ptr<TiledBuffer>;
     };
 
     using BufferPtr = std::shared_ptr<TiledBuffer>;

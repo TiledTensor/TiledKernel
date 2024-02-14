@@ -1,5 +1,5 @@
 CC := g++
-EXAMPLE ?= shared_graph
+EXAMPLE ?= rf_graph
 EXAMPLE_SRCS := $(wildcard examples/*.cc)
 EXAMPLES := $(patsubst examples/%.cc, %, $(EXAMPLE_SRCS))
 

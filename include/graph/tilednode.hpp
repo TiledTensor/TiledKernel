@@ -37,6 +37,35 @@ namespace tiledkernel::graph {
                   std::string name = "",
                   std::vector<std::shared_ptr<TiledEdge>> in_edges = {},
                   std::vector<std::shared_ptr<TiledEdge>> out_edges = {});
+
+        NodeType getType() { return node_type; }
+
+        OpType getOpType() {
+            if (node_type == NodeType::Operator) {
+                return std::get<std::shared_ptr<Operator>>(data)->getOpType();
+            }
+            return OpType::Null;
+        }
+
+        std::string getName() { return name; }
+
+        std::vector<std::shared_ptr<TiledEdge>> getInEdges() {
+            return in_edges;
+        }
+
+        std::vector<std::shared_ptr<TiledEdge>> getOutEdges() {
+            return out_edges;
+        }
+
+        std::vector<std::shared_ptr<TiledNode>> getPredecessors() {
+            return predecessors;
+        }
+
+        std::vector<std::shared_ptr<TiledNode>> getSuccessors() {
+            return successors;
+        }
+
+        using Pointer = std::shared_ptr<TiledNode>;
     };
 
     using NodePtr = std::shared_ptr<TiledNode>;
