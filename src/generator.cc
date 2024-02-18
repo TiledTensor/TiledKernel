@@ -110,8 +110,7 @@ namespace tiledkernel {
                 auto iter_var = std::make_shared<IterVar>(
                     type::DataType::Int32,
                     access_map_rA->iteration_domain[loop].first,
-                    access_map_rA->iteration_domain[loop].second,
-                    access_map_rA->step_size[loop]);
+                    access_map_rA->iteration_domain[loop].second, 1);
 
                 ctx->pushVar(iter_var);
                 access_map_rA->setPinIterVar(loop, iter_var);

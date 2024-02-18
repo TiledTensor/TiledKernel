@@ -82,17 +82,17 @@ int main() {
     auto rA_gemm_access_map_i = std::make_shared<AccessMap>(
         1, 1, std::vector<std::vector<int32_t>>{std::vector<int32_t>{1}},
         std::vector<std::pair<int32_t, int32_t>>{std::make_pair(0, 10)},
-        std::vector<int32_t>{1}, std::vector<int32_t>{0});
+        std::vector<int32_t>{0});
 
     auto rB_gemm_access_map_i = std::make_shared<AccessMap>(
         1, 1, std::vector<std::vector<int32_t>>{std::vector<int32_t>{1}},
         std::vector<std::pair<int32_t, int32_t>>{std::make_pair(0, 10)},
-        std::vector<int32_t>{1}, std::vector<int32_t>{0});
+        std::vector<int32_t>{0});
 
     auto gemm_acc_access_map_i = std::make_shared<AccessMap>(
         1, 1, std::vector<std::vector<int32_t>>{std::vector<int32_t>{0}},
         std::vector<std::pair<int32_t, int32_t>>{std::make_pair(0, 10)},
-        std::vector<int32_t>{1}, std::vector<int32_t>{0});
+        std::vector<int32_t>{0});
 
     rA_gemm_edge->setAccessMapI(rA_gemm_access_map_i);
     rB_gemm_edge->setAccessMapI(rB_gemm_access_map_i);

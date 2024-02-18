@@ -14,12 +14,11 @@ namespace tiledkernel {
         AccessMap(size_t loop_depth, size_t access_dims,
                   std::vector<std::vector<int32_t>> access_pattern,
                   std::vector<std::pair<int32_t, int32_t>> iteration_domain,
-                  std::vector<int32_t> step_size, std::vector<int32_t> offset)
+                  std::vector<int32_t> offset)
             : loop_depth(loop_depth),
               access_dims(access_dims),
               access_pattern(access_pattern),
               iteration_domain(iteration_domain),
-              step_size(step_size),
               offset(offset) {
             pin_iter_vars.resize(loop_depth);
             for (auto& iter_var : pin_iter_vars) {
@@ -49,7 +48,7 @@ namespace tiledkernel {
         // loop_depth
         std::vector<std::pair<int32_t, int32_t>> iteration_domain;
         // loop_depth
-        std::vector<int32_t> step_size;
+        // std::vector<int32_t> step_size;
         std::vector<int32_t> offset;
 
         std::vector<std::optional<std::shared_ptr<IterVar>>> pin_iter_vars;
