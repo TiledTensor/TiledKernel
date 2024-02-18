@@ -20,6 +20,8 @@ namespace tiledkernel {
 
         bool isValid() const { return id_ != 0; }
 
+        uint64_t value() const { return id_; }
+
         operator uint64_t() const { return id_; }
     };
 };  // namespace tiledkernel

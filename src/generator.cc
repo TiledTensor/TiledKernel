@@ -3,7 +3,9 @@
 #include "generator.hpp"
 #include "error_handler.hpp"
 #include <fmt/core.h>
+#include <fmtlog.h>
 #include <sstream>
+#include <iostream>
 
 namespace tiledkernel {
 
@@ -23,9 +25,9 @@ namespace tiledkernel {
         std::string kernel = "";
         switch (graph->getMemLevel()) {
             case MemoryLevel::Global:
-                break;
+                kernel += emit_global_cute(graph);
             case MemoryLevel::Shared:
-                break;
+                kernel += emit_shared_cute(graph);
             case MemoryLevel::RF:
                 kernel += emit_rf_cute(graph);
         }
@@ -58,6 +60,44 @@ namespace tiledkernel {
             }
         }
         return kernel;
+    }
+
+    std::string TiledGenerator::emit_shared_cute(TiledGraph::Pointer graph) {
+        std::string kernel;
+        auto sorted_nodes = graph->topoSort();
+
+        std::vector<TiledNode::Pointer> compute_nodes;
+        std::vector<TiledNode::Pointer> rf_nodes;
+
+        for (auto node : sorted_nodes) {
+            if (node->getMemLevel() == MemoryLevel::RF) {
+                rf_nodes.push_back(node);
+            }
+        }
+
+        kernel += "__syncthreads();\n";
+        for (auto node : rf_nodes) {
+            auto graph = std::get<TiledGraph::Pointer>(node->getData());
+            auto sorted_nodes = graph->topoSort();
+            logd("ID\tName");
+#ifdef DEBUG
+            fmt::println("[DEBUG] ID\tName");
+#endif
+            for (auto node : sorted_nodes) {
+                logd("{}\t{}", node->id.value(), node->name);
+#ifdef DEBUG
+                fmt::println("[DEBUG] {}\t{}", node->id.value(), node->name);
+#endif
+            }
+            kernel += emit_rf_cute(graph);
+        }
+        kernel += "__syncthreads();\n";
+
+        return kernel;
+    }
+
+    std::string TiledGenerator::emit_global_cute(TiledGraph::Pointer graph) {
+        return "";
     }
 
     std::string TiledGenerator::emit_rf_cute_gemm(TiledNode::Pointer node) {

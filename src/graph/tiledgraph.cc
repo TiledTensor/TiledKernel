@@ -58,6 +58,8 @@ namespace tiledkernel::graph {
         return false;
     }
 
+    void TiledGraph::clear() {}
+
     void TiledGraph::connect() {
         for (auto node : nodes) {
             for (auto edge : node->in_edges) {

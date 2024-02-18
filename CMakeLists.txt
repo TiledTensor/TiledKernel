@@ -6,6 +6,17 @@ option(USE_CUDA "Support CUDA GPU" OFF)
 option(BUILD_TEST "Build test code" ON)
 option(BUILD_ASAN "Build code whith ASAN" OFF)
 
+option(DEBUG "Debug mode" OFF)
+
+if(DEBUG)
+  message("Debug mode is enabled.")
+  add_definitions(-DDEBUG)
+  set(CMAKE_BUILD_TYPE Debug)
+else()
+  message("Debug mode is disabled.")
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF) 
@@ -19,12 +30,17 @@ if(BUILD_ASAN)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_ASAN_FLAGS}")
 endif()
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 include_directories(include)
-# include_directories(3rd-party/fmt/include)
-# include_directories(3rd-party/result)
-# include_directories(3rd-party/fmtlog)
-# add_definitions(-D FMTLOG_HEADER_ONLY)
-# add_definitions(-D FMT_HEADER_ONLY)
+
+include_directories(3rd-party/fmt/include)
+add_subdirectory(3rd-party/fmt)
+add_definitions(-D FMT_HEADER_ONLY)
+
+include_directories(3rd-party/fmtlog)
+add_definitions(-D FMTLOG_HEADER_ONLY)
+
 
 if(BUILD_TEST)
     include_directories(3rd-party/googletest/googletest/include)
@@ -42,12 +58,7 @@ file(GLOB_RECURSE SOURCE
   src/graph/*.cc
 )
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(tiledkernel SHARED ${SOURCE})
-
-include_directories(3rd-party/fmt/include)
-add_subdirectory(3rd-party/fmt)
-
 
 add_compile_options(-Wall)
 add_compile_options(-Werror)

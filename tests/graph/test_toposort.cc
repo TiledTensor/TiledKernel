@@ -6,14 +6,15 @@
 #include "op.hpp"
 
 #include <gtest/gtest.h>
+#include <fmtlog.h>
 
 using namespace tiledkernel;
 using namespace tiledkernel::type;
 using namespace tiledkernel::graph;
 
 TEST(Graph, tiledgraph_topo_rf_gemm_graph) {
+    fmtlog::setLogLevel(fmtlog::LogLevel::INF);
     // Build a RF Gemm graph
-
     // Define buffers
     auto sA = std::make_shared<TiledBuffer>("sA", MemoryLevel::Shared,
                                             DataType::Float32);

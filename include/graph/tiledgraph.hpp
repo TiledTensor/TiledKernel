@@ -19,6 +19,10 @@ namespace tiledkernel::graph {
 
         MemoryLevel getMemLevel() { return mem_level; }
 
+        void connect();
+
+        void clear();
+
         std::vector<std::shared_ptr<TiledNode>> topoSort();
 
         bool isNodeExist(std::shared_ptr<TiledNode> node);
@@ -33,7 +37,5 @@ namespace tiledkernel::graph {
         std::vector<std::shared_ptr<TiledEdge>> in_edges;
         std::vector<std::shared_ptr<TiledEdge>> out_edges;
         std::vector<std::shared_ptr<TiledEdge>> intra_edges;
-
-        void connect();
     };
 };  // namespace tiledkernel::graph

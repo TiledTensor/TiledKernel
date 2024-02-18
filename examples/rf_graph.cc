@@ -7,6 +7,7 @@
 #include "platform.hpp"
 #include "op.hpp"
 #include <iostream>
+#include <fmtlog.h>
 
 using namespace tiledkernel;
 using namespace tiledkernel::type;
@@ -14,7 +15,7 @@ using namespace tiledkernel::graph;
 
 int main() {
     // Build a RF Gemm graph
-
+    fmtlog::setLogLevel(fmtlog::LogLevel::DBG);
     std::cout << "Run RF GEMM Graph Example:" << std::endl << std::endl;
     // Define buffers
     auto sA = std::make_shared<TiledBuffer>("sA", MemoryLevel::Shared,

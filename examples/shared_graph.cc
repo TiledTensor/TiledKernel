@@ -3,16 +3,18 @@
 #include "graph/tilededge.hpp"
 #include "type/data_type.hpp"
 #include "tiledbuffer.hpp"
+#include "generator.hpp"
 #include "op.hpp"
 #include <iostream>
+#include <fmtlog.h>
 
 using namespace tiledkernel;
 using namespace tiledkernel::type;
 using namespace tiledkernel::graph;
 
 int main() {
+    fmtlog::setLogLevel(fmtlog::LogLevel::DBG);
     // Build a Shared Gemm graph
-
     std::cout << "Shared GEMM Graph Example:" << std::endl;
     // Define buffers
     auto sA = std::make_shared<TiledBuffer>("sA", MemoryLevel::Shared,
@@ -99,10 +101,36 @@ int main() {
         std::vector<EdgePtr>{acc_sC_edge},
         std::vector<EdgePtr>{rA_gemm_edge, rB_gemm_edge, gemm_acc_edge});
 
+    auto rf_sorted_nodes = rf_gemm_graph->topoSort();
+    std::cout << "ID\tName" << std::endl;
+    for (auto node : rf_sorted_nodes) {
+        std::cout << node->id << "\t" << node->name << std::endl;
+    }
+
     auto rf_gemm_node = std::make_shared<TiledNode>(
         NodeType::Task, MemoryLevel::RF, TiledNodeData{rf_gemm_graph},
         "rf_gemm_node", std::vector<EdgePtr>{sA_rA_edge, sB_rB_edge},
         std::vector<EdgePtr>{acc_sC_edge});
+
+    // Define Access Map
+    auto rA_gemm_access_map_i = std::make_shared<AccessMap>(
+        1, 1, std::vector<std::vector<int32_t>>{std::vector<int32_t>{1}},
+        std::vector<std::pair<int32_t, int32_t>>{std::make_pair(0, 10)},
+        std::vector<int32_t>{0});
+
+    auto rB_gemm_access_map_i = std::make_shared<AccessMap>(
+        1, 1, std::vector<std::vector<int32_t>>{std::vector<int32_t>{1}},
+        std::vector<std::pair<int32_t, int32_t>>{std::make_pair(0, 10)},
+        std::vector<int32_t>{0});
+
+    auto gemm_acc_access_map_i = std::make_shared<AccessMap>(
+        1, 1, std::vector<std::vector<int32_t>>{std::vector<int32_t>{0}},
+        std::vector<std::pair<int32_t, int32_t>>{std::make_pair(0, 10)},
+        std::vector<int32_t>{0});
+
+    rA_gemm_edge->setAccessMapI(rA_gemm_access_map_i);
+    rB_gemm_edge->setAccessMapI(rB_gemm_access_map_i);
+    gemm_acc_edge->setAccessMapI(gemm_acc_access_map_i);
 
     std::cout << "Connect Shared GEMM Graph:" << std::endl;
     auto shared_gemm_graph = std::make_shared<TiledGraph>(
@@ -118,4 +146,10 @@ int main() {
     for (auto node : sorted_nodes) {
         std::cout << node->id << "\t" << node->name << std::endl;
     }
+
+    auto generator = std::make_shared<TiledGenerator>();
+
+    auto kernel = generator->emit(Platform::Cute, shared_gemm_graph);
+
+    std::cout << "Generate kernel:" << std::endl << kernel << std::endl;
 }

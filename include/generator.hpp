@@ -19,8 +19,14 @@ namespace tiledkernel {
        private:
         TiledContext::Pointer ctx;
 
+        // Emit code for the given platform.
         std::string emit_cute(TiledGraph::Pointer graph);
+
+        // Emit code for the given memory hierarchy graph.
         std::string emit_rf_cute(TiledGraph::Pointer graph);
+        std::string emit_shared_cute(TiledGraph::Pointer graph);
+        std::string emit_global_cute(TiledGraph::Pointer graph);
+
         std::string emit_rf_cute_gemm(TiledNode::Pointer node);
 
         std::string generate_loop(IterVar::Pointer iter_var, std::string body);

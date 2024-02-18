@@ -59,6 +59,8 @@ namespace tiledkernel::graph {
             return {};
         }
 
+        TiledNodeData getData() { return data; }
+
         std::vector<std::shared_ptr<TiledEdge>> getInEdges() {
             return in_edges;
         }
