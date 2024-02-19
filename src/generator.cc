@@ -79,16 +79,12 @@ namespace tiledkernel {
         for (auto node : rf_nodes) {
             auto graph = std::get<TiledGraph::Pointer>(node->getData());
             auto sorted_nodes = graph->topoSort();
-            logd("ID\tName");
 #ifdef DEBUG
             fmt::println("[DEBUG] ID\tName");
-#endif
             for (auto node : sorted_nodes) {
-                logd("{}\t{}", node->id.value(), node->name);
-#ifdef DEBUG
                 fmt::println("[DEBUG] {}\t{}", node->id.value(), node->name);
-#endif
             }
+#endif
             kernel += emit_rf_cute(graph);
         }
         kernel += "__syncthreads();\n";
