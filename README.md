@@ -1,5 +1,9 @@
 # TiledKernel
+
+**Note: TiledKernel is no longer an active project, and the successor is [ThrillerFlow](https://github.com/TiledTensor/ThrillerFlow).**
+
 ## Introduction
+
 TiledKernel is a **code generation library** based on **macro kernels** and **memory hierarchy graph data structure**.
 
 TiledKernel aims to build a graph data structure and a series of macro kernels for code generation. The goal of TiledKernel is to generate high-performance fused kernels by leveraging a data structure that takes into account hardware characteristics and manually optimized macro kernels, while reducing scheduling overhead.
@@ -9,6 +13,7 @@ In most of the current state-of-the-art (SOTA) methods, hardware vendor-provided
 To achieve these goals, TiledKernel will provide a data structure based on graph memory hierarchy and performance-optimized macro kernels.
 
 ### Memory Hierarchy Graph Data Structure
+
 To represent the entire computational process, **a data structure (I think we can just refer to it as the IR)** is required. While the specifics of the data structure can be set aside for now, the overall structure should be hierarchical in nature as shown below.
 
 In this hierarchical dataflow graph, the dataflow edges have explicit operational semantics for data access.
